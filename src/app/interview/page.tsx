@@ -8,48 +8,52 @@ export default function InterviewPage() {
   const interviewId = searchParams.get("interviewId");
 
   const [questions, setQuestions] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!interviewId) return;
 
-    fetch("/api/interview/question", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ interviewId }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setQuestions(data.questions || []);
-        setLoading(false);
-      })
-      .catch(() => {
-        setQuestions([]);
-        setLoading(false);
-      });
+    async function loadQuestions() {
+      try {
+        const res = await fetch("/api/interview/question", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ interviewId }),
+        });
+
+        if (!res.ok) throw new Error("Bad response");
+
+        const data = await res.json();
+
+        if (!data.questions || !Array.isArray(data.questions)) {
+          throw new Error("Invalid question format");
+        }
+
+        setQuestions(data.questions);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load questions");
+      }
+    }
+
+    loadQuestions();
   }, [interviewId]);
 
-  if (!interviewId) {
-    return <p className="text-white">Invalid interview link</p>;
-  }
-
-  if (loading) {
-    return <p className="text-white">Loading questions...</p>;
+  if (error) {
+    return <div className="text-red-500 text-center mt-20">{error}</div>;
   }
 
   if (questions.length === 0) {
-    return <p className="text-white">No questions generated</p>;
+    return <div className="text-white text-center mt-20">Loading questions...</div>;
   }
 
   return (
     <div className="text-white p-10">
-      <h1 className="text-2xl mb-4">Interview Started</h1>
+      <h1 className="text-3xl mb-6">Interview Started</h1>
 
-      <ul className="space-y-4">
-        {questions.map((q, i) => (
-          <li key={i}>{q}</li>
-        ))}
-      </ul>
+      <p className="text-xl">
+        {questions[0].question}
+      </p>
     </div>
   );
 }

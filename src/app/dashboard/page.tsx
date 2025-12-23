@@ -18,6 +18,7 @@ export default function DashboardPage() {
   const [role, setRole] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [experience, setExperience] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleStartInterview = async () => {
     if (!role || !jobDescription || !experience) {
@@ -25,10 +26,14 @@ export default function DashboardPage() {
       return;
     }
 
+    setLoading(true);
+
     try {
       const res = await fetch("/api/interview/setup", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           role,
           jobDescription,
@@ -38,21 +43,23 @@ export default function DashboardPage() {
 
       const data = await res.json();
 
-      if (!data.interviewId) {
-        alert("Interview setup failed");
-        return;
+      if (!res.ok || !data.interviewId) {
+        throw new Error("Interview setup failed");
       }
 
-      // ✅ CORRECT REDIRECT (THIS WAS BROKEN EARLIER)
+      // ✅ THIS IS THE IMPORTANT FIX
       router.push(`/interview?interviewId=${data.interviewId}`);
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong");
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong while starting interview");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex bg-[#020617] text-white">
+      
       {/* LEFT SIDEBAR */}
       <aside className="w-64 border-r border-white/10 p-6">
         <button
@@ -66,6 +73,7 @@ export default function DashboardPage() {
       {/* MAIN CONTENT */}
       <main className="flex-1 flex justify-center items-start py-20 px-6">
         <div className="w-full max-w-2xl space-y-10">
+          
           {/* Heading */}
           <div>
             <h1 className="text-4xl font-bold mb-2">
@@ -138,11 +146,12 @@ export default function DashboardPage() {
           {/* CTA */}
           <button
             onClick={handleStartInterview}
+            disabled={loading}
             className="w-full py-4 rounded-lg font-semibold text-black
                        bg-gradient-to-r from-indigo-400 to-pink-400
-                       hover:opacity-90 transition"
+                       hover:opacity-90 transition disabled:opacity-60"
           >
-            Start Interview
+            {loading ? "Starting..." : "Start Interview"}
           </button>
         </div>
       </main>

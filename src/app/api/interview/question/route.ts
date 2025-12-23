@@ -6,26 +6,33 @@ import { eq } from "drizzle-orm";
 
 export async function POST(req: Request) {
   try {
-    const { interviewId } = await req.json();
+    const body = await req.json();
+    const interviewId = body?.interviewId;
 
     if (!interviewId) {
-      return NextResponse.json({ error: "interviewId missing" }, { status: 400 });
+      return NextResponse.json(
+        { error: "interviewId missing" },
+        { status: 400 }
+      );
     }
 
-    // ✅ FIXED DRIZZLE QUERY
-    const result = await db
+    // ✅ FIXED: NO db.query
+    const setupResult = await db
       .select()
       .from(interviewSetups)
       .where(eq(interviewSetups.id, interviewId))
       .limit(1);
 
-    const setup = result[0];
+    const setup = setupResult[0];
 
     if (!setup) {
-      return NextResponse.json({ error: "Setup not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Interview setup not found" },
+        { status: 404 }
+      );
     }
 
-    // ✅ Gemini (adapted correctly)
+    // Gemini
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
@@ -39,21 +46,27 @@ Experience: ${setup.experience} years
 Job Description: ${setup.jobDescription}
 
 Rules:
-- Return ONLY valid JSON
-- Format:
-[
-  { "question": "...", "context": "..." }
-]
+- Mix theory and practical
+- Match difficulty to experience
+- Return ONLY a JSON array of strings
 `;
 
-    const response = await model.generateContent(prompt);
-    const text = response.response.text();
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
 
-    const questions = JSON.parse(text);
+    let questions: string[];
+    try {
+      questions = JSON.parse(text);
+    } catch {
+      return NextResponse.json(
+        { error: "Invalid Gemini response", raw: text },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({ questions });
   } catch (err) {
-    console.error("QUESTION API ERROR:", err);
+    console.error("QUESTION GENERATION ERROR:", err);
     return NextResponse.json(
       { error: "Failed to generate questions" },
       { status: 500 }

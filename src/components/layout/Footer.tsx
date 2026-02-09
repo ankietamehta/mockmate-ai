@@ -5,7 +5,7 @@ export default function Footer() {
         
         {/* Left */}
         <div className="text-lg font-semibold text-white">
-          © {new Date().getFullYear()} MockMate
+          © {new Date().getFullYear()} Mockmate
           <span className="text-indigo-400">AI</span>
         </div>
 

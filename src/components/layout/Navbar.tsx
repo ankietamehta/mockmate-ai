@@ -10,7 +10,7 @@ export default function Navbar() {
         
         {/* Logo */}
         <Link href="/" className="text-lg font-semibold text-white">
-          MockMate<span className="text-indigo-400">AI</span>
+          Mockmate<span className="text-indigo-400">AI</span>
         </Link>
 
         {/* Center links */}

@@ -37,7 +37,7 @@ export default function Hero() {
             <h1 className="text-4xl sm:text-5xl xl:text-6xl font-extrabold leading-tight text-white">
               Crack your Interview And Get a Job with{" "}
               <span className="block bg-gradient-to-r from-indigo-400 to-pink-500 bg-clip-text text-transparent">
-                MockMate AI
+                Mockmate AI
               </span>
             </h1>
 

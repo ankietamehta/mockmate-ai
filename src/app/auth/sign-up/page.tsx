@@ -12,6 +12,7 @@ export default function SignUpPage() {
         <div className="w-full max-w-md min-h-[520px] p-10 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center">
           
           <SignUp
+            routing="hash"   // ✅ YAHI FIX HAI (IMPORTANT)
             appearance={{
               elements: {
                 card: "bg-transparent shadow-none",
@@ -27,7 +28,7 @@ export default function SignUpPage() {
                   "bg-white text-black placeholder-gray-500",
               },
             }}
-            redirectUrl="/dashboard"
+            redirectUrl="/dashboard/page"
             signInUrl="/auth/sign-in"
           />
 

@@ -6,14 +6,14 @@ import { ChevronDown } from "lucide-react";
 export default function FAQ() {
   const faqs = [
     {
-      question: "Is MockMate AI free to use?",
+      question: "Is Mockmate AI free to use?",
       answer:
-        "Yes, MockMate AI is completely free to use with no hiddden charges . You can practice unlimited times , we won't charge for taking Mock AI or there will not be  any limit .",
+        "Yes, Mockmate AI is completely free to use with no hiddden charges . You can practice unlimited times , we won't charge for taking Mock AI or there will not be  any limit .",
     },
     {
       question: "Do I need prior interview experience?",
       answer:
-        "No prior experience is required. MockMate AI is designed for freshers as well as experienced professionals. With zero experience , you can start practicing and building your confidence right away.",
+        "No prior experience is required. Mockmate AI is designed for freshers as well as experienced professionals. With zero experience , you can start practicing and building your confidence right away.",
     },
     {
       question: "Which roles are supported?",
@@ -28,7 +28,7 @@ export default function FAQ() {
     {
       question: "Can freshers use MockMate AI?",
       answer:
-        "Yes, MockMate AI is perfect for freshers to build confidence, structure answers, and practice interviews safely.",
+        "Yes, Mockmate AI is perfect for freshers to build confidence, structure answers, and practice interviews safely.",
     },
   ];
 
@@ -50,7 +50,7 @@ export default function FAQ() {
           </h2>
 
           <p className="mt-6 text-lg text-gray-300">
-            Everything you need to know about MockMate AI
+            Everything you need to know about Mockmate AI
           </p>
         </div>
 
